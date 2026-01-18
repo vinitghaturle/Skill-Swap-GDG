@@ -1,0 +1,57 @@
+# Dependencies
+node_modules
+*/node_modules
+**/node_modules
+
+# Build outputs (we rebuild in Docker)
+dist
+*/dist
+**/dist
+
+# Convex (managed service, not containerized)
+packages/convex
+
+# Development files
+.git
+.gitignore
+.env
+.env.local
+.env.*.local
+*.env
+
+# IDE and editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# Test and coverage
+coverage
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__
+
+# Documentation
+*.md
+!README.md
+docs
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp
+temp
+*.tmp
+
+# Lock files (we use pnpm-lock.yaml for monorepo)
+package-lock.json
+yarn.lock

@@ -1,0 +1,47 @@
+# =============================================================================
+# SkillSwap Hub - Sandbox Environment Override
+# =============================================================================
+# Purpose: Configure services for sandbox environments with no inbound access
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.sandbox.yml up
+#
+# Why this file exists:
+#   - Sandbox environments (Railway, Render, etc.) block inbound network access
+#   - Services must bind to localhost (127.0.0.1) only
+#   - Cloudflare Tunnel exposes localhost services to the internet
+#   - Container port 80 → host port 8080 to avoid privileged port conflicts
+#
+# What this overrides:
+#   - Port bindings ONLY (binds to 127.0.0.1 instead of 0.0.0.0)
+#   - Does NOT change environment variables, volumes, or networks
+#   - Does NOT add or remove services
+# =============================================================================
+
+services:
+  # ===========================================================================
+  # Web Frontend - Bind to localhost:8080
+  # ===========================================================================
+  # Override: Container port 80 → Host 127.0.0.1:8080
+  # Reason: Avoid privileged port 80, accessible only via Cloudflare Tunnel
+  web:
+    ports:
+      - "127.0.0.1:8080:80"
+
+  # ===========================================================================
+  # WebRTC Signaling Server - Bind to localhost:3001
+  # ===========================================================================
+  # Override: Container port 3001 → Host 127.0.0.1:3001
+  # Reason: Block direct internet access, route through Cloudflare Tunnel
+  signaling:
+    ports:
+      - "127.0.0.1:3001:3001"
+
+  # ===========================================================================
+  # File Storage Server - Bind to localhost:3002
+  # ===========================================================================
+  # Override: Container port 3002 → Host 127.0.0.1:3002
+  # Reason: Block direct internet access, route through Cloudflare Tunnel
+  storage:
+    ports:
+      - "127.0.0.1:3002:3002"

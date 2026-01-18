@@ -1,0 +1,88 @@
+# =============================================================================
+# SkillSwap Hub - Docker Compose Configuration
+# =============================================================================
+# Usage:
+#   Development:  docker-compose up --build
+#   Production:   docker-compose -f docker-compose.yml up -d
+#
+# Environment variables must be provided via:
+#   - Shell environment
+#   - .env file (never commit this file)
+#   - CI/CD secrets injection
+# =============================================================================
+
+services:
+  # ===========================================================================
+  # Web Frontend (React/Vite)
+  # ===========================================================================
+  web:
+    build:
+      context: .
+      dockerfile: packages/web/Dockerfile
+      args:
+        # Build-time variables (PUBLIC - embedded in JS bundle)
+        VITE_FIREBASE_API_KEY: ${VITE_FIREBASE_API_KEY}
+        VITE_FIREBASE_AUTH_DOMAIN: ${VITE_FIREBASE_AUTH_DOMAIN}
+        VITE_FIREBASE_PROJECT_ID: ${VITE_FIREBASE_PROJECT_ID}
+        VITE_FIREBASE_STORAGE_BUCKET: ${VITE_FIREBASE_STORAGE_BUCKET}
+        VITE_FIREBASE_MESSAGING_SENDER_ID: ${VITE_FIREBASE_MESSAGING_SENDER_ID}
+        VITE_FIREBASE_APP_ID: ${VITE_FIREBASE_APP_ID}
+        VITE_CONVEX_URL: ${VITE_CONVEX_URL}
+        VITE_SIGNALING_SERVER_URL: ${VITE_SIGNALING_SERVER_URL:-http://localhost:3001}
+        VITE_STORAGE_SERVER_URL: ${VITE_STORAGE_SERVER_URL:-http://localhost:3002}
+    ports:
+      - "${WEB_PORT:-3000}:80"
+    depends_on:
+      - signaling
+      - storage
+    restart: unless-stopped
+    networks:
+      - skillswap-network
+
+  # ===========================================================================
+  # WebRTC Signaling Server
+  # ===========================================================================
+  signaling:
+    build:
+      context: packages/services/signaling
+      dockerfile: Dockerfile
+    ports:
+      - "${SIGNALING_SERVER_PORT:-3001}:3001"
+    environment:
+      # Runtime secrets (never in Dockerfile)
+      SIGNALING_SERVER_PORT: 3001
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
+      CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID}
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN}
+      CLOUDFLARE_TURN_KEY_ID: ${CLOUDFLARE_TURN_KEY_ID}
+    restart: unless-stopped
+    networks:
+      - skillswap-network
+
+  # ===========================================================================
+  # File Storage Server
+  # ===========================================================================
+  storage:
+    build:
+      context: packages/services/storage
+      dockerfile: Dockerfile
+    ports:
+      - "${STORAGE_SERVER_PORT:-3002}:3002"
+    environment:
+      # Runtime secrets (never in Dockerfile)
+      STORAGE_SERVER_PORT: 3002
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
+      FIREBASE_ADMIN_SDK_JSON: ${FIREBASE_ADMIN_SDK_JSON:-/app/secrets/firebase-admin.json}
+    volumes:
+      # Mount Firebase credentials file (optional - can also use env var)
+      - ${FIREBASE_ADMIN_SDK_PATH:-./secrets}:/app/secrets:ro
+    restart: unless-stopped
+    networks:
+      - skillswap-network
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  skillswap-network:
+    driver: bridge
