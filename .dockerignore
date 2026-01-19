@@ -9,7 +9,7 @@ dist
 **/dist
 
 # Convex (managed service, not containerized)
-packages/convex
+
 
 # Development files
 .git
