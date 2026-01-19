@@ -11,14 +11,25 @@ WORKDIR /app
 # Copy workspace config files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
+# Copy convex package (required for code generation)
+COPY packages/convex/package.json ./packages/convex/
+
 # Copy web package
 COPY packages/web/package.json ./packages/web/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy source code
+# Copy convex source code (schema and functions)
+COPY packages/convex ./packages/convex
+
+# Copy web source code
 COPY packages/web ./packages/web
+
+# Generate Convex types BEFORE building web app
+# This creates packages/convex/convex/_generated/* that web imports
+WORKDIR /app/packages/convex
+RUN pnpm exec convex codegen --typecheck disable
 
 # Build arguments for VITE (public, build-time variables)
 ARG VITE_FIREBASE_API_KEY
