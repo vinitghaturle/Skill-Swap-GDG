@@ -1,6 +1,6 @@
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { Id } from "./_generated/dataModel";
+import type { Id } from "./_generated/dataModel";
 
 /**
  * Submit feedback for a completed session
