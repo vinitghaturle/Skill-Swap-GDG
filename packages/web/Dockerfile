@@ -29,7 +29,6 @@ COPY packages/web ./packages/web
 # Generate Convex types BEFORE building web app
 # This creates packages/convex/convex/_generated/* that web imports
 WORKDIR /app/packages/convex
-RUN pnpm exec convex codegen --typecheck disable
 
 # Build arguments for VITE (public, build-time variables)
 ARG VITE_FIREBASE_API_KEY
