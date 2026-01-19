@@ -31,10 +31,6 @@ export function VideoCallPage() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
-    // Optimistic UI states for instant feedback
-    const [isLocallyMuted, setIsLocallyMuted] = useState(false);
-    const [isCameraOff, setIsCameraOff] = useState(false);
-
     const currentUser = useQuery(api.auth.getUserByFirebaseUid, user ? { firebaseUid: user.uid } : "skip");
     const session = useQuery(api.sessions.getSessionDetails, sessionId ? { sessionId: sessionId as any } : 'skip');
     const activeCall = useQuery(api.calls.getActiveCall, sessionId ? { sessionId: sessionId as any } : 'skip');
