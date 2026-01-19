@@ -5,10 +5,7 @@ importScripts('https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js'
 importScripts('https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js');
 
 // Firebase config - must match your app config
-<<<<<<< HEAD
 
-=======
->>>>>>> d5e426ad7f0aa8e5d671624bfa5e335678e8d46c
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
