@@ -4,10 +4,11 @@
  */
 
 import admin from 'firebase-admin';
+import { Bucket } from '@google-cloud/storage';
 import { v4 as uuidv4 } from 'uuid';
 
 export class FirebaseStorageService {
-    private bucket: admin.storage.Bucket;
+    private bucket: Bucket;
     private initialized: boolean = false;
 
     constructor() {
@@ -181,10 +182,10 @@ export class FirebaseStorageService {
             const [metadata] = await file.getMetadata();
 
             return {
-                name: metadata.name,
-                size: parseInt(metadata.size),
-                contentType: metadata.contentType,
-                created: new Date(metadata.timeCreated),
+                name: metadata.name || '',
+                size: metadata.size ? parseInt(String(metadata.size)) : 0,
+                contentType: metadata.contentType || 'application/octet-stream',
+                created: new Date(metadata.timeCreated || Date.now()),
             };
         } catch (error) {
             console.error('❌ Failed to get file metadata:', error);

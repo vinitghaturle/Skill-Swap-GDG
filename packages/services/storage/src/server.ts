@@ -7,6 +7,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import winston from 'winston';
+import multer from 'multer';
 import { FirebaseStorageService } from './firebaseStorage';
 import { upload, validateFileSize, validateFileType } from './middleware/validation';
 
