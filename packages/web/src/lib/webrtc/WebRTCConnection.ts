@@ -28,23 +28,37 @@ export interface WebRTCCallbacks {
 }
 
 const getIceServers = (): RTCIceServer[] => {
-    const stunUrls = import.meta.env.VITE_ICE_SERVER_URLS?.split(',') || ['stun:stun.l.google.com:19302'];
-    const servers: RTCIceServer[] = stunUrls.map((url: string) => ({ urls: url }));
+  const forceTurn = import.meta.env.VITE_FORCE_TURN === 'true';
 
-    const turnUrl = import.meta.env.VITE_TURN_SERVER_URL;
-    const turnUser = import.meta.env.VITE_TURN_USERNAME;
-    const turnPass = import.meta.env.VITE_TURN_PASSWORD;
+  const servers: RTCIceServer[] = [];
 
-    if (turnUrl && turnUser && turnPass) {
-        servers.push({
-            urls: turnUrl,
-            username: turnUser,
-            credential: turnPass,
-        });
-        console.log('[WebRTC] TURN server configured');
-    }
+  // ❌ If forceTurn = true, DO NOT add STUN
+  if (!forceTurn) {
+    const stunUrls =
+      import.meta.env.VITE_ICE_SERVER_URLS?.split(',') ||
+      ['stun:stun.l.google.com:19302'];
 
-    return servers;
+    stunUrls.forEach((url: string) => {
+      servers.push({ urls: url });
+    });
+  }
+
+  const turnUrl = import.meta.env.VITE_TURN_SERVER_URL;
+  const turnUser = import.meta.env.VITE_TURN_USERNAME;
+  const turnPass = import.meta.env.VITE_TURN_PASSWORD;
+
+  if (turnUrl && turnUser && turnPass) {
+    servers.push({
+      urls: turnUrl.includes(',') ? turnUrl.split(',') : turnUrl,
+      username: turnUser,
+      credential: turnPass,
+    });
+    console.log('[WebRTC] TURN server configured');
+  } else {
+    console.warn('[WebRTC] TURN NOT configured');
+  }
+
+  return servers;
 };
 
 export class WebRTCConnection {
@@ -181,7 +195,8 @@ export class WebRTCConnection {
     }
 
     private createPeerConnection(): void {
-        this.pc = new RTCPeerConnection({ iceServers: getIceServers() });
+        this.pc = new RTCPeerConnection({ iceServers: getIceServers(), 
+            iceTransportPolicy: import.meta.env.VITE_FORCE_TURN === 'true' ? 'relay' : 'all' });
 
         this.pc.onicecandidate = (event) => {
             if (event.candidate) {
