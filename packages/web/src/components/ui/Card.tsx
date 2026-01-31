@@ -12,9 +12,9 @@ interface CardProps extends HTMLMotionProps<'div'> {
 export const Card = forwardRef<HTMLDivElement, CardProps>(
     ({ className, children, variant = 'glass', noPadding = false, ...props }, ref) => {
         const variants = {
-            glass: 'bg-gray-950/40 backdrop-blur-xl border border-white/5 shadow-2xl',
-            outline: 'bg-transparent border border-white/10',
-            flat: 'bg-gray-900 border border-white/5',
+            glass: 'bg-secondary-900/40 backdrop-blur-xl border border-warm-400/5 shadow-2xl shadow-warm-900/10',
+            outline: 'bg-transparent border border-warm-400/10',
+            flat: 'bg-secondary-800 border border-warm-400/5',
         };
 
         return (
@@ -62,7 +62,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                     <input
                         ref={ref}
                         className={cn(
-                            'w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white placeholder:text-gray-600 outline-none focus:border-indigo-500/50 focus:bg-white/[0.08] transition-all',
+                            'w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white placeholder:text-gray-600 outline-none focus:border-warm-500/50 focus:bg-white/[0.08] transition-all',
                             icon && 'pl-11',
                             error && 'border-red-500/50 bg-red-500/5',
                             className

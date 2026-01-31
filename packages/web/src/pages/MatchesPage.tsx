@@ -56,12 +56,12 @@ export const MatchesPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-950 pb-20">
+        <div className="min-h-screen bg-secondary-950 pb-20">
             {/* Header */}
-            <div className="relative overflow-hidden bg-gray-900/50 border-b border-white/5 px-6 py-12 mb-12 backdrop-blur-3xl">
+            <div className="relative overflow-hidden bg-secondary-900/50 border-b border-warm-500/5 px-6 py-12 mb-12 backdrop-blur-3xl">
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-20">
-                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/20 blur-[120px] rounded-full" />
-                    <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/20 blur-[120px] rounded-full" />
+                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-warm-500/20 blur-[120px] rounded-full" />
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-warm-700/20 blur-[120px] rounded-full" />
                 </div>
 
                 <div className="max-w-7xl mx-auto relative z-10">
@@ -69,10 +69,10 @@ export const MatchesPage = () => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         onClick={() => navigate("/dashboard")}
-                        className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors text-xs font-black uppercase tracking-widest mb-8"
+                        className="flex items-center gap-2 text-gray-500 hover:text-warm-400 transition-colors text-sm font-bold tracking-wide mb-8 group"
                     >
-                        <ArrowLeft className="w-4 h-4" />
-                        Return to Command Center
+                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                        Back to Dashboard
                     </motion.button>
 
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
@@ -81,12 +81,12 @@ export const MatchesPage = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                             >
-                                <Badge variant="info" className="mb-4">Intelligence Engine</Badge>
+                                <Badge variant="info" className="mb-4 bg-warm-500/10 text-warm-400 border-warm-500/20">✨ Matches for You</Badge>
                                 <h1 className="text-5xl font-black text-white tracking-tighter sm:text-6xl">
-                                    Discover <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Potential</span>
+                                    Find Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-warm-400 to-warm-600">Perfect Match</span>
                                 </h1>
                                 <p className="text-gray-400 mt-4 text-lg font-medium max-w-xl leading-relaxed">
-                                    Our matching algorithm analyzed thousands of endpoints to find the perfect skill exchange nodes for you.
+                                    We've found people who want to learn what you teach, and can teach what you want to learn.
                                 </p>
                             </motion.div>
                         </div>
@@ -100,9 +100,9 @@ export const MatchesPage = () => {
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-2 text-gray-400">
                                     <SlidersHorizontal className="w-4 h-4" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Match Threshold</span>
+                                    <span className="text-xs font-bold tracking-wide">Minimum Match Score</span>
                                 </div>
-                                <span className="text-indigo-400 font-black">{minScore}%</span>
+                                <span className="text-warm-400 font-black">{minScore}%</span>
                             </div>
                             <input
                                 type="range"
@@ -111,7 +111,7 @@ export const MatchesPage = () => {
                                 step="10"
                                 value={minScore}
                                 onChange={(e) => setMinScore(Number(e.target.value))}
-                                className="w-full h-1.5 bg-white/5 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                                className="w-full h-1.5 bg-white/5 rounded-lg appearance-none cursor-pointer accent-warm-500"
                             />
                         </motion.div>
                     </div>
@@ -138,16 +138,16 @@ export const MatchesPage = () => {
                             <Search className="w-10 h-10 text-gray-700" />
                         </div>
                         <h3 className="text-3xl font-black text-white mb-4 tracking-tight">
-                            Scanning Result: Empty
+                            No Matches Yet
                         </h3>
                         <p className="text-gray-500 max-w-md mx-auto mb-10 font-medium">
                             {matches.length === 0
-                                ? "We need more data to generate matches. Enhance your profile with skills you can teach and skills you want to learn."
-                                : "No entities found within this threshold. Try reducing the match requirements."}
+                                ? "We need a bit more information to find great matches. Add the skills you can teach and what you'd like to learn to your profile."
+                                : "No matches meet this score requirement. Try lowering the minimum score to see more people."}
                         </p>
                         {matches.length === 0 && (
                             <Button onClick={() => navigate("/profile/setup")}>
-                                Enhance Profile Node
+                                Complete Your Profile
                             </Button>
                         )}
                     </motion.div>
@@ -197,40 +197,40 @@ const MatchCard = ({ match, onClick }: { match: any; onClick: () => void }) => {
                     {/* Score Header */}
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl flex items-center justify-center text-indigo-400 font-black">
+                            <div className="w-12 h-12 bg-warm-500/10 border border-warm-500/20 rounded-2xl flex items-center justify-center text-warm-400 font-black">
                                 {match.score}%
                             </div>
                             <div>
-                                <h4 className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Match Probability</h4>
+                                <h4 className="text-xs font-bold tracking-wide text-warm-400">Match Score</h4>
                                 <p className="text-xs text-gray-500 font-bold">
-                                    {match.score >= 80 ? "Critical Connection" : "Stable Link"}
+                                    {match.score >= 80 ? "Excellent Match" : "Good Match"}
                                 </p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
                             {match.profile._creationTime > Date.now() - 7 * 24 * 60 * 60 * 1000 && (
-                                <Badge variant="info" className="bg-indigo-500/10 text-indigo-400 border-indigo-500/20">New</Badge>
+                                <Badge variant="info" className="bg-warm-500/10 text-warm-400 border-warm-500/20">New</Badge>
                             )}
-                            <Sparkles className={cn("w-5 h-5 transition-colors", match.score >= 80 ? "text-amber-400" : "text-gray-700")} />
+                            <Sparkles className={cn("w-5 h-5 transition-colors", match.score >= 80 ? "text-warm-400" : "text-gray-700")} />
                         </div>
                     </div>
 
                     {/* Content */}
                     <div className="mb-8">
-                        <h3 className="text-2xl font-black text-white mb-2 leading-tight group-hover:text-indigo-400 transition-colors">
-                            {match.user?.displayName || "Node_Unknown"}
+                        <h3 className="text-2xl font-black text-white mb-2 leading-tight group-hover:text-warm-400 transition-colors">
+                            {match.user?.displayName || "Anonymous"}
                         </h3>
                         <p className="text-sm text-gray-400 font-medium line-clamp-2 leading-relaxed h-10">
-                            {match.profile.bio || "No biometric data transmitted for this entity."}
+                            {match.profile.bio || "This person hasn't written a bio yet."}
                         </p>
                     </div>
 
                     {/* Skill Clusters */}
                     <div className="space-y-6">
                         <div className="space-y-3">
-                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                            <div className="flex items-center gap-2 text-xs font-bold tracking-wide text-gray-500">
                                 <GraduationCap className="w-3.5 h-3.5" />
-                                Masters Of
+                                Can Teach
                             </div>
                             <div className="flex flex-wrap gap-2">
                                 {match.profile.teachSkills.slice(0, 3).map((skill: string) => (
@@ -245,9 +245,9 @@ const MatchCard = ({ match, onClick }: { match: any; onClick: () => void }) => {
                         </div>
 
                         <div className="space-y-3">
-                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                            <div className="flex items-center gap-2 text-xs font-bold tracking-wide text-gray-500">
                                 <BookOpen className="w-3.5 h-3.5" />
-                                Seeking Insight
+                                Wants to Learn
                             </div>
                             <div className="flex flex-wrap gap-2">
                                 {match.profile.learnSkills.slice(0, 3).map((skill: string) => (
@@ -264,8 +264,8 @@ const MatchCard = ({ match, onClick }: { match: any; onClick: () => void }) => {
                 </div>
 
                 <div className="p-4 bg-white/[0.02] border-t border-white/5 rounded-b-[1.75rem] mt-4">
-                    <Button onClick={onClick} className="w-full" variant="secondary">
-                        Establish Connection <ArrowRight className="w-4 h-4 ml-2" />
+                    <Button onClick={onClick} className="w-full group" variant="secondary">
+                        View Profile <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
                 </div>
             </Card>

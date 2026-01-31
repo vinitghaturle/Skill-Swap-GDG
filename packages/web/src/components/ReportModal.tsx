@@ -92,7 +92,7 @@ export const ReportModal = ({ isOpen, onClose, reporterId, reportedId, reportedN
                                             <CheckCircle2 className="w-8 h-8 text-green-500" />
                                         </div>
                                         <h3 className="text-xl font-bold text-white mb-2">Report Submitted</h3>
-                                        <p className="text-sm text-gray-400">Our safety team will review this node interaction.</p>
+                                        <p className="text-sm text-gray-400">Our safety team will review this person interaction.</p>
                                     </motion.div>
                                 ) : (
                                     <div className="space-y-6">

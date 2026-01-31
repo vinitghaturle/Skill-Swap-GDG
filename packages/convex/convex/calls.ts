@@ -50,7 +50,13 @@ export const initiateCall = mutation({
             .first();
 
         if (existingCall) {
-            throw new Error("Call already in progress for this session");
+            // Auto-cleanup existing call - if user is initiating a new call, the old one clearly failed
+            console.log(`[initiateCall] Cleaning up existing call ${existingCall._id} (status: ${existingCall.status})`);
+            await ctx.db.patch(existingCall._id, {
+                status: "failed",
+                endedAt: Date.now(),
+                failureReason: "Replaced by new call attempt",
+            });
         }
 
         // Create call record

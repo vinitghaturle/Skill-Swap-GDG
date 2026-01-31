@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from 'convex/react';
 import { useAuth } from '../contexts/AuthContext';
@@ -10,6 +10,8 @@ import { FilePreview } from '../components/FilePreview';
 import { SessionChat } from '../components/SessionChat';
 import { IncomingCallModal } from '../components/IncomingCallModal';
 import { FeedbackModal } from '../components/FeedbackModal';
+import { PreCallTest } from '../components/PreCallTest';
+import type { PreCallResult } from '../lib/webrtc/PreCallValidator';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
@@ -26,7 +28,7 @@ export function VideoCallPage() {
     const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
     const [callStarted, setCallStarted] = useState(false);
-    const [callState, setCallState] = useState<'idle' | 'incoming' | 'outgoing' | 'connected'>('idle');
+    const [callState, setCallState] = useState<'idle' | 'incoming' | 'outgoing' | 'pre-call-test' | 'connected'>('idle');
     const [sidebarTab, setSidebarTab] = useState<'chat' | 'files'>('chat');
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
@@ -117,34 +119,63 @@ export function VideoCallPage() {
     useEffect(() => {
         if (!sessionId || !session || !currentUser || callStarted) return;
         const isReceiver = session.receiverId === currentUser._id;
+
         if (isReceiver && activeCall) {
+            // Receiver: Show incoming call modal
             setCallState('incoming');
-        } else if (!isReceiver) {
-            setCallState('outgoing');
-            handleStartCall();
+        } else if (!isReceiver && !activeCall) {
+            // Initiator: Show idle state with join button (don't auto-trigger test)
+            setCallState('idle');
         }
     }, [sessionId, session, currentUser, activeCall, callStarted]);
 
-    const handleStartCall = async () => {
-        if (callStarted) return;
+    const handleJoinCall = () => {
+        // User clicked join button, show pre-call test
+        setCallState('pre-call-test');
+    };
+
+    const handleStartCall = useCallback(async () => {
+        if (callStarted) {
+            console.log('[VideoCall] Ignoring handleStartCall, call already started');
+            return;
+        }
         setCallStarted(true);
         try {
-            if (isInitiator && !activeCall && session) {
+            if (isInitiator && session) {
+                console.log('[VideoCall] Initiator creating new call...');
+                // Always call mutation - backend will cleanup any existing call
                 await initiateCallMutation({
                     sessionId: sessionId as any,
                     callerId: currentUser!._id,
                     receiverId: session.receiverId as any,
                 });
+            } else {
+                console.log('[VideoCall] Receiver joining existing call...');
             }
             await startCall();
         } catch (err) {
             console.error('Failed to start call:', err);
+            setCallStarted(false); // Reset on error so user can retry
         }
+    }, [callStarted, isInitiator, session, currentUser, sessionId, initiateCallMutation, startCall]);
+
+    const handlePreCallComplete = useCallback(async (result: PreCallResult) => {
+        if (result.canProceed && !callStarted) {
+            setCallState('outgoing');
+            handleStartCall();
+        } else if (result.canProceed && callStarted) {
+            console.log('[VideoCall] Ignoring pre-call complete, call already started');
+        }
+        // Pre-call failed handled in PreCallTest component
+    }, [callStarted, handleStartCall]);
+
+    const handlePreCallCancel = () => {
+        navigate('/sessions');
     };
 
     const handleAcceptCall = async () => {
-        setCallState('connected');
-        await handleStartCall();
+        // Receiver: Show pre-call test before joining
+        setCallState('pre-call-test');
     };
 
     const handleDeclineCall = async () => {
@@ -175,7 +206,7 @@ export function VideoCallPage() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
+            <div className="min-h-screen bg-secondary-950 flex items-center justify-center p-4">
                 <Card variant="glass" className="max-w-md w-full text-center p-12 border-red-500/20">
                     <div className="w-20 h-20 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-8">
                         <PhoneOff className="w-10 h-10 text-red-500" />
@@ -183,6 +214,50 @@ export function VideoCallPage() {
                     <h2 className="text-3xl font-black text-white mb-3">Call Failed</h2>
                     <p className="text-gray-400 mb-10 font-medium">{error}</p>
                     <Button variant="danger" className="w-full" onClick={() => navigate('/sessions')}>
+                        Back to Sessions
+                    </Button>
+                </Card>
+            </div>
+        );
+    }
+
+    // Show pre-call test for initiator
+    if (callState === 'pre-call-test') {
+        return (
+            <PreCallTest
+                onComplete={handlePreCallComplete}
+                onCancel={handlePreCallCancel}
+            />
+        );
+    }
+
+    // Show idle state with join button for initiator
+    if (callState === 'idle' && session) {
+        return (
+            <div className="min-h-screen bg-secondary-950 flex items-center justify-center p-4">
+                <Card variant="glass" className="max-w-md w-full text-center p-12">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center mx-auto mb-8">
+                        <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <h2 className="text-3xl font-black text-white mb-3">Ready to Join?</h2>
+                    <p className="text-gray-400 mb-2 font-medium">{session.skill}</p>
+                    <p className="text-sm text-gray-500 mb-10">
+                        {new Date(session.scheduledAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                    </p>
+                    <Button
+                        variant="primary"
+                        className="w-full mb-4"
+                        onClick={handleJoinCall}
+                    >
+                        Join Call
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        className="w-full"
+                        onClick={() => navigate('/sessions')}
+                    >
                         Back to Sessions
                     </Button>
                 </Card>
@@ -257,10 +332,10 @@ export function VideoCallPage() {
                                         rotate: [0, 360]
                                     }}
                                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                                    className="w-32 h-32 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full mb-8 shadow-[0_0_50px_-12px_rgba(79,70,229,0.5)]"
+                                    className="w-32 h-32 border-4 border-warm-500/20 border-t-warm-500 rounded-full mb-8 shadow-[0_0_50px_-12px_rgba(227,80,13,0.5)]"
                                 />
-                                <h2 className="text-3xl font-black text-white tracking-tighter">Establishing Link...</h2>
-                                <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px] mt-2">Wait for peer response</p>
+                                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tighter px-4">Connecting...</h2>
+                                <p className="text-gray-500 font-bold tracking-wide text-xs mt-2">Waiting for partner to join</p>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -337,8 +412,8 @@ export function VideoCallPage() {
                                 <button
                                     onClick={() => setSidebarTab('chat')}
                                     className={cn(
-                                        "flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2",
-                                        sidebarTab === 'chat' ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20" : "text-gray-500 hover:text-white"
+                                        "flex-1 py-3 sm:py-4 rounded-2xl text-xs font-bold tracking-wide transition-all flex items-center justify-center gap-2",
+                                        sidebarTab === 'chat' ? "bg-warm-600 text-white shadow-lg shadow-warm-500/20" : "text-gray-500 hover:text-white"
                                     )}
                                 >
                                     <MessageSquare className="w-3.5 h-3.5" />
@@ -347,8 +422,8 @@ export function VideoCallPage() {
                                 <button
                                     onClick={() => setSidebarTab('files')}
                                     className={cn(
-                                        "flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2",
-                                        sidebarTab === 'files' ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20" : "text-gray-500 hover:text-white"
+                                        "flex-1 py-3 sm:py-4 rounded-2xl text-xs font-bold tracking-wide transition-all flex items-center justify-center gap-2",
+                                        sidebarTab === 'files' ? "bg-warm-600 text-white shadow-lg shadow-warm-500/20" : "text-gray-500 hover:text-white"
                                     )}
                                 >
                                     <Files className="w-3.5 h-3.5" />

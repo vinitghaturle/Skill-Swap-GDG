@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { WebRTCConnection, type WebRTCStats } from './WebRTCConnection';
+import { WebRTCConnection, type WebRTCStats, type ConnectionPhase } from './WebRTCConnection';
 
 interface UseWebRTCOptions {
     signalingUrl: string;
@@ -12,6 +12,7 @@ interface UseWebRTCReturn {
     localStream: MediaStream | null;
     remoteStream: MediaStream | null;
     connectionState: RTCPeerConnectionState;
+    connectionPhase: ConnectionPhase;
     stats: WebRTCStats | null;
     error: string | null;
     isConnecting: boolean;
@@ -25,6 +26,7 @@ export function useWebRTC(options: UseWebRTCOptions): UseWebRTCReturn {
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [connectionState, setConnectionState] = useState<RTCPeerConnectionState>('new');
+    const [connectionPhase, setConnectionPhase] = useState<ConnectionPhase>('idle');
     const [stats, setStats] = useState<WebRTCStats | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isConnecting, setIsConnecting] = useState(false);
@@ -32,7 +34,10 @@ export function useWebRTC(options: UseWebRTCOptions): UseWebRTCReturn {
     const connectionRef = useRef<WebRTCConnection | null>(null);
 
     const startCall = useCallback(async () => {
-        if (connectionRef.current) return;
+        if (connectionRef.current) {
+            console.warn('[useWebRTC] Connection already exists, ignoring duplicate startCall()');
+            return;
+        }
 
         setIsConnecting(true);
         setError(null);
@@ -54,6 +59,11 @@ export function useWebRTC(options: UseWebRTCOptions): UseWebRTCReturn {
                     setConnectionState(state);
                     if (state === 'connected') setIsConnecting(false);
                     if (state === 'failed') setStats(null);
+                },
+                onConnectionPhase: (phase) => {
+                    setConnectionPhase(phase);
+                    if (phase === 'connected') setIsConnecting(false);
+                    if (phase === 'reconnecting') setIsConnecting(true);
                 },
                 onStats: (s) => setStats(s),
                 onError: (err) => {
@@ -95,6 +105,7 @@ export function useWebRTC(options: UseWebRTCOptions): UseWebRTCReturn {
         localStream,
         remoteStream,
         connectionState,
+        connectionPhase,
         stats,
         error,
         isConnecting,

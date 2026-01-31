@@ -36,22 +36,22 @@ export const ChatListPage = () => {
 
     if (!currentUser) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+            <div className="min-h-screen bg-secondary-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-warm-600"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-secondary-50">
             {/* Header */}
             <header className="bg-white shadow-sm">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center justify-between">
-                        <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
+                        <h1 className="text-xl sm:text-2xl font-bold text-secondary-900">Messages</h1>
                         <button
                             onClick={() => navigate("/dashboard")}
-                            className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+                            className="px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 hover:text-secondary-900 hover:-translate-x-1 transition-all flex items-center gap-1"
                         >
                             ← Back
                         </button>
@@ -63,7 +63,7 @@ export const ChatListPage = () => {
             <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {!conversations ? (
                     <div className="flex items-center justify-center py-12">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-warm-600"></div>
                     </div>
                 ) : conversations.length === 0 ? (
                     <div className="bg-white rounded-lg shadow-sm p-12 text-center">
@@ -76,7 +76,7 @@ export const ChatListPage = () => {
                         </p>
                         <button
                             onClick={() => navigate("/matches")}
-                            className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium"
+                            className="px-6 py-3 bg-warm-600 text-white rounded-lg hover:bg-warm-700 font-medium transition"
                         >
                             Find Matches
                         </button>
@@ -98,8 +98,8 @@ export const ChatListPage = () => {
                                     {/* Conversation Info */}
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center justify-between mb-1">
-                                            <h3 className="text-base font-semibold text-gray-900 truncate">
-                                                {conv.otherUser?.displayName || "Unknown User"}
+                                            <h3 className="text-base font-semibold text-secondary-900 truncate">
+                                                {conv.otherUser?.displayName || "Anonymous"}
                                             </h3>
                                             <span className="text-xs text-gray-500 flex-shrink-0 ml-2">
                                                 {formatTimestamp(conv.lastMessageAt)}
@@ -113,7 +113,7 @@ export const ChatListPage = () => {
                                     {/* Unread Badge */}
                                     {conv.unreadCount > 0 && (
                                         <div className="flex-shrink-0">
-                                            <span className="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-primary-600 rounded-full">
+                                            <span className="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-warm-600 rounded-full">
                                                 {conv.unreadCount}
                                             </span>
                                         </div>

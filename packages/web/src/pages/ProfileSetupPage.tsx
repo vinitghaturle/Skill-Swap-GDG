@@ -94,11 +94,11 @@ export const ProfileSetupPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-950 py-20 px-6 relative overflow-hidden">
+        <div className="min-h-screen bg-secondary-950 py-20 px-6 relative overflow-hidden">
             {/* Background Atmosphere */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none opacity-20">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/20 blur-[120px] rounded-full" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/20 blur-[120px] rounded-full" />
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-warm-500/20 blur-[120px] rounded-full" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-warm-700/20 blur-[120px] rounded-full" />
             </div>
 
             <div className="max-w-4xl mx-auto relative z-10">
@@ -107,9 +107,9 @@ export const ProfileSetupPage = () => {
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black uppercase tracking-widest mb-6"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-warm-500/10 border border-warm-500/20 text-warm-400 text-xs font-bold tracking-wide mb-6"
                     >
-                        <Rocket className="w-3 h-3" /> Initializing Node Identity
+                        <Sparkles className="w-4 h-4 animate-pulse" /> Let's set up your profile
                     </motion.div>
                     <motion.h1
                         initial={{ opacity: 0, y: 10 }}
@@ -117,15 +117,15 @@ export const ProfileSetupPage = () => {
                         transition={{ delay: 0.1 }}
                         className="text-5xl font-black text-white tracking-tighter mb-4"
                     >
-                        Configure Your Nexus
+                        Tell Us About Yourself
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-gray-500 font-medium max-w-xl mx-auto text-lg"
+                        className="text-gray-400 font-medium max-w-xl mx-auto text-lg"
                     >
-                        Complete the initialization sequence to activate your profile on the global exchange network.
+                        Help us find the perfect learning partners for you. This takes about 3 minutes.
                     </motion.p>
                 </div>
 
@@ -138,13 +138,13 @@ export const ProfileSetupPage = () => {
                             <div key={step} className="relative">
                                 <div className={cn(
                                     "h-1.5 rounded-full transition-all duration-500",
-                                    isActive ? "bg-indigo-500 shadow-[0_0_15px_-3px_rgba(99,102,241,0.8)]" :
-                                        isCompleted ? "bg-indigo-500/40" : "bg-white/5"
+                                    isActive ? "bg-warm-500 shadow-[0_0_15px_-3px_rgba(227,80,13,0.8)]" :
+                                        isCompleted ? "bg-warm-500/40" : "bg-white/5"
                                 )} />
                                 <div className="mt-3 text-center">
                                     <span className={cn(
                                         "text-[9px] font-black uppercase tracking-widest transition-colors duration-300",
-                                        isActive ? "text-white" : isCompleted ? "text-indigo-400/60" : "text-gray-700"
+                                        isActive ? "text-white" : isCompleted ? "text-warm-400/60" : "text-gray-700"
                                     )}>
                                         {step}
                                     </span>
@@ -210,9 +210,9 @@ export const ProfileSetupPage = () => {
                             <button
                                 onClick={handleBack}
                                 disabled={stepIndex === 0}
-                                className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors disabled:opacity-0 disabled:pointer-events-none"
+                                className="flex items-center gap-2 text-xs font-bold tracking-wide text-gray-500 hover:text-white transition-all disabled:opacity-0 disabled:pointer-events-none group"
                             >
-                                <ChevronLeft className="w-4 h-4" /> Go Back
+                                <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back
                             </button>
 
                             <Button
@@ -222,9 +222,9 @@ export const ProfileSetupPage = () => {
                                 className="min-w-[200px]"
                             >
                                 {stepIndex === steps.length - 1 ? (
-                                    <>Activate Node <Rocket className="ml-2 w-4 h-4" /></>
+                                    <>Complete Setup <Rocket className="ml-2 w-4 h-4" /></>
                                 ) : (
-                                    <>Continue Sequence <ChevronRight className="ml-2 w-4 h-4" /></>
+                                    <>Continue <ChevronRight className="ml-2 w-4 h-4" /></>
                                 )}
                             </Button>
                         </div>
@@ -240,12 +240,12 @@ export const ProfileSetupPage = () => {
 const StepBio = ({ bio, onChange }: { bio: string; onChange: (bio: string) => void }) => (
     <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center border border-indigo-500/20">
-                <User className="w-6 h-6 text-indigo-500" />
+            <div className="w-12 h-12 bg-warm-500/10 rounded-2xl flex items-center justify-center border border-warm-500/20">
+                <User className="w-6 h-6 text-warm-500" />
             </div>
             <div>
-                <h2 className="text-3xl font-black text-white tracking-tight uppercase">Identity Protocol</h2>
-                <p className="text-gray-500 font-medium">Define your specialized background and mission.</p>
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">About You</h2>
+                <p className="text-gray-500 font-medium">Tell us a bit about your background and interests.</p>
             </div>
         </div>
 
@@ -253,18 +253,18 @@ const StepBio = ({ bio, onChange }: { bio: string; onChange: (bio: string) => vo
             <textarea
                 value={bio}
                 onChange={(e) => onChange(e.target.value)}
-                placeholder="I'm a senior architect specializing in distributed systems and high-throughput databases..."
-                className="w-full h-56 bg-white/[0.02] border border-white/10 rounded-[2rem] px-8 py-8 text-white text-lg font-medium focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 group-hover:bg-white/[0.04] transition-all resize-none shadow-inner"
+                placeholder="I'm a software developer passionate about web technologies and learning new frameworks..."
+                className="w-full h-56 bg-white/[0.02] border border-white/10 rounded-[2rem] px-8 py-8 text-white text-lg font-medium focus:outline-none focus:ring-4 focus:ring-warm-500/10 focus:border-warm-500/50 group-hover:bg-white/[0.04] transition-all resize-none shadow-inner"
                 maxLength={500}
             />
             <div className="absolute bottom-6 right-8 flex items-center gap-4">
                 <span className={cn(
-                    "text-[10px] font-black uppercase tracking-widest",
+                    "text-xs font-bold tracking-wide",
                     bio.length < 20 ? "text-amber-500" : "text-emerald-500"
                 )}>
-                    {bio.length < 20 ? `${20 - bio.length} chars needed` : "Protocol Valid"}
+                    {bio.length < 20 ? `${20 - bio.length} more needed` : "Good to go!"}
                 </span>
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-600">
+                <span className="text-xs font-bold tracking-wide text-gray-600">
                     {bio.length} / 500
                 </span>
             </div>
@@ -285,8 +285,8 @@ const StepTeachSkills = ({
                 <Target className="w-6 h-6 text-emerald-500" />
             </div>
             <div>
-                <h2 className="text-3xl font-black text-white tracking-tight uppercase">Knowledge Export</h2>
-                <p className="text-gray-500 font-medium">Select components you can transmit to other nodes.</p>
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">Skills You Can Teach</h2>
+                <p className="text-gray-500 font-medium">What skills can you share with others?</p>
             </div>
         </div>
 
@@ -294,7 +294,7 @@ const StepTeachSkills = ({
             <SkillAutocomplete
                 selectedSkills={skills}
                 onChange={onChange}
-                placeholder="Search for transmission vectors (Node.js, Rust, Strategy...)"
+                placeholder="Search for skills (e.g., React, Python, Guitar...)"
             />
         </div>
 
@@ -306,7 +306,7 @@ const StepTeachSkills = ({
                     className="flex items-center gap-3 mt-8 p-4 bg-amber-500/5 border border-amber-500/20 rounded-2xl"
                 >
                     <Info className="w-4 h-4 text-amber-500" />
-                    <p className="text-xs font-bold text-amber-500 uppercase tracking-widest">At least one export vector is required</p>
+                    <p className="text-xs font-bold text-amber-500 tracking-wide">Please add at least one skill you can teach</p>
                 </motion.div>
             )}
         </AnimatePresence>
@@ -322,12 +322,12 @@ const StepLearnSkills = ({
 }) => (
     <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center border border-indigo-500/20">
-                <Sparkles className="w-6 h-6 text-indigo-500" />
+            <div className="w-12 h-12 bg-warm-500/10 rounded-2xl flex items-center justify-center border border-warm-500/20">
+                <Sparkles className="w-6 h-6 text-warm-500" />
             </div>
             <div>
-                <h2 className="text-3xl font-black text-white tracking-tight uppercase">Insight Acquisition</h2>
-                <p className="text-gray-500 font-medium">Define the signals you wish to absorb from the network.</p>
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">Skills You Want to Learn</h2>
+                <p className="text-gray-500 font-medium">What new skills are you interested in learning?</p>
             </div>
         </div>
 
@@ -335,7 +335,7 @@ const StepLearnSkills = ({
             <SkillAutocomplete
                 selectedSkills={skills}
                 onChange={onChange}
-                placeholder="Search for new insights to capture..."
+                placeholder="Search for skills you'd like to learn..."
             />
         </div>
 
@@ -347,7 +347,7 @@ const StepLearnSkills = ({
                     className="flex items-center gap-3 mt-8 p-4 bg-amber-500/5 border border-amber-500/20 rounded-2xl"
                 >
                     <Info className="w-4 h-4 text-amber-500" />
-                    <p className="text-xs font-bold text-amber-500 uppercase tracking-widest">At least one acquisition vector is required</p>
+                    <p className="text-xs font-bold text-amber-500 tracking-wide">Please add at least one skill you want to learn</p>
                 </motion.div>
             )}
         </AnimatePresence>
@@ -363,12 +363,12 @@ const StepAvailability = ({
 }) => (
     <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-10">
-            <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center border border-purple-500/20">
-                <Clock className="w-6 h-6 text-purple-500" />
+            <div className="w-12 h-12 bg-warm-500/10 rounded-2xl flex items-center justify-center border border-warm-500/20">
+                <Clock className="w-6 h-6 text-warm-500" />
             </div>
             <div>
-                <h2 className="text-3xl font-black text-white tracking-tight uppercase">Temporal Window</h2>
-                <p className="text-gray-500 font-medium">Establish your synchronization windows within the weekly cycle.</p>
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">Your Availability</h2>
+                <p className="text-gray-500 font-medium">When are you typically available for sessions?</p>
             </div>
         </div>
 
@@ -383,7 +383,7 @@ const StepAvailability = ({
                 className="flex items-center gap-3 mt-8 p-4 bg-amber-500/5 border border-amber-500/20 rounded-2xl"
             >
                 <Info className="w-4 h-4 text-amber-500" />
-                <p className="text-xs font-bold text-amber-500 uppercase tracking-widest">Define at least one synchronization slot</p>
+                <p className="text-xs font-bold text-amber-500 tracking-wide">Please select at least one time slot</p>
             </motion.div>
         )}
     </div>

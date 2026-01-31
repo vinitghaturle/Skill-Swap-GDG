@@ -19,46 +19,49 @@ export interface WebRTCStats {
     resolution?: string;
 }
 
+export type ConnectionPhase = 'idle' | 'gathering-media' | 'ready' | 'connecting' | 'connected' | 'reconnecting' | 'disconnected';
+
 export interface WebRTCCallbacks {
     onLocalStream: (stream: MediaStream) => void;
     onRemoteStream: (stream: MediaStream) => void;
     onConnectionState: (state: RTCPeerConnectionState) => void;
+    onConnectionPhase?: (phase: ConnectionPhase) => void;
     onError: (error: Error) => void;
     onStats?: (stats: WebRTCStats) => void;
 }
 
 const getIceServers = (): RTCIceServer[] => {
-  const forceTurn = import.meta.env.VITE_FORCE_TURN === 'true';
+    const forceTurn = import.meta.env.VITE_FORCE_TURN === 'true';
 
-  const servers: RTCIceServer[] = [];
+    const servers: RTCIceServer[] = [];
 
-  // ❌ If forceTurn = true, DO NOT add STUN
-  if (!forceTurn) {
-    const stunUrls =
-      import.meta.env.VITE_ICE_SERVER_URLS?.split(',') ||
-      ['stun:stun.l.google.com:19302'];
+    // ❌ If forceTurn = true, DO NOT add STUN
+    if (!forceTurn) {
+        const stunUrls =
+            import.meta.env.VITE_ICE_SERVER_URLS?.split(',') ||
+            ['stun:stun.l.google.com:19302'];
 
-    stunUrls.forEach((url: string) => {
-      servers.push({ urls: url });
-    });
-  }
+        stunUrls.forEach((url: string) => {
+            servers.push({ urls: url });
+        });
+    }
 
-  const turnUrl = import.meta.env.VITE_TURN_SERVER_URL;
-  const turnUser = import.meta.env.VITE_TURN_USERNAME;
-  const turnPass = import.meta.env.VITE_TURN_PASSWORD;
+    const turnUrl = import.meta.env.VITE_TURN_SERVER_URL;
+    const turnUser = import.meta.env.VITE_TURN_USERNAME;
+    const turnPass = import.meta.env.VITE_TURN_PASSWORD;
 
-  if (turnUrl && turnUser && turnPass) {
-    servers.push({
-      urls: turnUrl.includes(',') ? turnUrl.split(',') : turnUrl,
-      username: turnUser,
-      credential: turnPass,
-    });
-    console.log('[WebRTC] TURN server configured');
-  } else {
-    console.warn('[WebRTC] TURN NOT configured');
-  }
+    if (turnUrl && turnUser && turnPass) {
+        servers.push({
+            urls: turnUrl.includes(',') ? turnUrl.split(',') : turnUrl,
+            username: turnUser,
+            credential: turnPass,
+        });
+        console.log('[WebRTC] TURN server configured');
+    } else {
+        console.warn('[WebRTC] TURN NOT configured');
+    }
 
-  return servers;
+    return servers;
 };
 
 export class WebRTCConnection {
@@ -71,6 +74,8 @@ export class WebRTCConnection {
     private reconnectTimeout: any = null;
     private reconnectAttempts = 0;
     private statsInterval: any = null;
+    private connectionPhase: ConnectionPhase = 'idle';
+    private candidateFlushTimeout: any = null;
 
     constructor(config: WebRTCConfig, callbacks: WebRTCCallbacks) {
         this.config = config;
@@ -80,6 +85,7 @@ export class WebRTCConnection {
     async start(): Promise<void> {
         try {
             // 1. Get media
+            this.setPhase('gathering-media');
             this.localStream = await navigator.mediaDevices.getUserMedia({
                 video: { width: 1280, height: 720, facingMode: 'user' },
                 audio: { echoCancellation: true, noiseSuppression: true }
@@ -97,10 +103,21 @@ export class WebRTCConnection {
                 this.pc!.addTrack(track, this.localStream!);
             });
 
-            // 5. Start stats reporting
+            // 5. Mark as ready (NOW safe to create offers)
+            this.setPhase('ready');
+            console.log('[WebRTC] Ready for peer connection');
+
+            // 6. Start stats reporting
             this.startStatsReporting();
 
+            // 7. If we're initiator and peer already joined, create offer now
+            if (this.config.isInitiator) {
+                // Peer may have joined before we were ready
+                this.tryCreateOffer();
+            }
+
         } catch (err) {
+            this.setPhase('disconnected');
             this.callbacks.onError(err instanceof Error ? err : new Error(String(err)));
         }
     }
@@ -160,17 +177,12 @@ export class WebRTCConnection {
                 reject(new Error('Failed to connect to signaling server'));
             });
 
-            // When peer joins, initiator creates offer
+            // When peer joins, initiator creates offer (ONLY if ready)
             this.socket.on('peer:joined', async () => {
-                console.log('[WebRTC] Peer joined, creating offer...');
-                if (this.config.isInitiator && this.pc) {
-                    try {
-                        const offer = await this.pc.createOffer();
-                        await this.pc.setLocalDescription(offer);
-                        this.socket!.emit('signal', { type: 'offer', sdp: offer.sdp });
-                    } catch (err) {
-                        console.error('[WebRTC] Failed to create offer:', err);
-                    }
+                console.log('[WebRTC] Peer joined');
+                if (this.config.isInitiator) {
+                    // FIX RANK #1: Only create offer if we're ready (tracks added)
+                    this.tryCreateOffer();
                 }
             });
 
@@ -189,14 +201,28 @@ export class WebRTCConnection {
             });
 
             this.socket.on('peer:left', () => {
+                console.log('[WebRTC] Peer left', { currentPhase: this.connectionPhase });
+                // Ignore peer:left if we haven't even started connecting yet
+                if (this.connectionPhase === 'idle' || this.connectionPhase === 'gathering-media' || this.connectionPhase === 'ready') {
+                    console.log('[WebRTC] Ignoring peer:left, connection not established yet');
+                    return;
+                }
+                // FIX RANK #4: Clean up connection before error
+                this.stop();
                 this.callbacks.onError(new Error('Remote peer disconnected'));
             });
         });
     }
 
     private createPeerConnection(): void {
-        this.pc = new RTCPeerConnection({ iceServers: getIceServers(), 
-            iceTransportPolicy: import.meta.env.VITE_FORCE_TURN === 'true' ? 'relay' : 'all' });
+        // FIX RANK #6: Add missing RTCPeerConnection config
+        this.pc = new RTCPeerConnection({
+            iceServers: getIceServers(),
+            iceTransportPolicy: import.meta.env.VITE_FORCE_TURN === 'true' ? 'relay' : 'all',
+            iceCandidatePoolSize: 10,
+            bundlePolicy: 'max-bundle',
+            rtcpMuxPolicy: 'require'
+        });
 
         this.pc.onicecandidate = (event) => {
             if (event.candidate) {
@@ -205,7 +231,11 @@ export class WebRTCConnection {
         };
 
         this.pc.ontrack = (event) => {
-            this.callbacks.onRemoteStream(event.streams[0]);
+            console.log('[WebRTC] ontrack event', { streams: event.streams?.length, kind: event.track.kind });
+            if (event.streams?.[0]) {
+                console.log('[WebRTC] Calling onRemoteStream callback');
+                this.callbacks.onRemoteStream(event.streams[0]);
+            }
         };
 
         this.pc.onconnectionstatechange = () => {
@@ -213,9 +243,15 @@ export class WebRTCConnection {
             if (state) this.callbacks.onConnectionState(state);
 
             if (state === 'failed') {
+                this.setPhase('reconnecting');
                 this.handleIceFailure();
             } else if (state === 'connected') {
+                this.setPhase('connected');
                 this.reconnectAttempts = 0;
+            } else if (state === 'connecting') {
+                this.setPhase('connecting');
+            } else if (state === 'disconnected') {
+                this.setPhase('disconnected');
             }
         };
 
@@ -228,7 +264,12 @@ export class WebRTCConnection {
     }
 
     private handleIceFailure(): void {
-        if (this.reconnectTimeout || this.reconnectAttempts > 5) return;
+        // FIX RANK #5: Increase max retries for mobile networks
+        const maxRetries = 8;
+        if (this.reconnectTimeout || this.reconnectAttempts > maxRetries) {
+            this.setPhase('disconnected');
+            return;
+        }
 
         this.reconnectAttempts++;
         const backoff = Math.pow(2, this.reconnectAttempts) * 1000;
@@ -240,12 +281,14 @@ export class WebRTCConnection {
             if (this.pc && (this.pc.iceConnectionState === 'failed' || this.pc.connectionState === 'failed')) {
                 try {
                     console.log('[WebRTC] Restarting ICE...');
+                    this.setPhase('reconnecting');
                     const offer = await this.pc.createOffer({ iceRestart: true });
                     await this.pc.setLocalDescription(offer);
                     this.socket?.emit('signal', { type: 'offer', sdp: offer.sdp });
                 } catch (err) {
                     console.error('[WebRTC] Ice restart failed:', err);
-                    if (this.reconnectAttempts >= 5) {
+                    if (this.reconnectAttempts >= 8) {
+                        this.setPhase('disconnected');
                         this.callbacks.onError(new Error('Persistent connection failure. Please check your network.'));
                     }
                 }
@@ -262,14 +305,12 @@ export class WebRTCConnection {
         }
 
         try {
+            // FIX RANK #3: Add error handling for setRemoteDescription
             await this.pc.setRemoteDescription({ type: 'offer', sdp });
             console.log('[WebRTC] Set remote description (offer)');
 
             // Process pending candidates
-            for (const candidate of this.pendingCandidates) {
-                await this.pc.addIceCandidate(candidate);
-            }
-            this.pendingCandidates = [];
+            await this.processPendingCandidates();
 
             const answer = await this.pc.createAnswer();
             await this.pc.setLocalDescription(answer);
@@ -279,24 +320,43 @@ export class WebRTCConnection {
             console.log('[WebRTC] Answer sent');
         } catch (err) {
             console.error('[WebRTC] handleOffer error:', err);
+            this.callbacks.onError(err instanceof Error ? err : new Error('Failed to process offer'));
         }
     }
 
     private async handleAnswer(sdp: string): Promise<void> {
-        await this.pc!.setRemoteDescription({ type: 'answer', sdp });
+        try {
+            // FIX RANK #3: Add error handling for setRemoteDescription
+            await this.pc!.setRemoteDescription({ type: 'answer', sdp });
+            console.log('[WebRTC] Set remote description (answer)');
 
-        // Process pending candidates
-        for (const candidate of this.pendingCandidates) {
-            await this.pc!.addIceCandidate(candidate);
+            // Process pending candidates
+            await this.processPendingCandidates();
+        } catch (err) {
+            console.error('[WebRTC] handleAnswer error:', err);
+            this.callbacks.onError(err instanceof Error ? err : new Error('Failed to process answer'));
         }
-        this.pendingCandidates = [];
     }
 
     private async handleCandidate(candidate: RTCIceCandidateInit): Promise<void> {
         if (this.pc?.remoteDescription) {
-            await this.pc.addIceCandidate(candidate);
+            try {
+                await this.pc.addIceCandidate(candidate);
+                console.log('[WebRTC] Added ICE candidate');
+            } catch (err) {
+                console.error('[WebRTC] Failed to add ICE candidate:', err);
+            }
         } else {
+            console.log('[WebRTC] Queueing ICE candidate (no remote description yet)');
             this.pendingCandidates.push(candidate);
+
+            // FIX RANK #3: Set timeout to flush candidates if remote description never arrives
+            if (this.candidateFlushTimeout) clearTimeout(this.candidateFlushTimeout);
+            this.candidateFlushTimeout = setTimeout(() => {
+                if (this.pendingCandidates.length > 0 && !this.pc?.remoteDescription) {
+                    console.warn(`[WebRTC] ${this.pendingCandidates.length} candidates queued but no remote description after 10s`);
+                }
+            }, 10000);
         }
     }
 
@@ -319,11 +379,81 @@ export class WebRTCConnection {
     }
 
     stop(): void {
+        console.log('[WebRTC] Stopping connection');
+
+        // Clear all timers
+        if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
+        if (this.statsInterval) clearInterval(this.statsInterval);
+        if (this.candidateFlushTimeout) clearTimeout(this.candidateFlushTimeout);
+
+        // Stop media
         this.localStream?.getTracks().forEach(t => t.stop());
+
+        // Close peer connection
         this.pc?.close();
+
+        // Disconnect socket
         this.socket?.disconnect();
+
+        // Clear state
         this.pc = null;
         this.socket = null;
         this.localStream = null;
+        this.pendingCandidates = [];
+        this.reconnectAttempts = 0;
+        this.setPhase('disconnected');
+    }
+
+    /**
+     * Helper: Try to create offer (only if ready)
+     */
+    private async tryCreateOffer(): Promise<void> {
+        if (this.connectionPhase !== 'ready' || !this.pc) {
+            console.log('[WebRTC] Not ready to create offer yet (phase:', this.connectionPhase, ')');
+            return;
+        }
+
+        try {
+            console.log('[WebRTC] Creating offer...');
+            this.setPhase('connecting');
+            const offer = await this.pc.createOffer();
+            await this.pc.setLocalDescription(offer);
+            this.socket!.emit('signal', { type: 'offer', sdp: offer.sdp });
+            console.log('[WebRTC] Offer sent');
+        } catch (err) {
+            console.error('[WebRTC] Failed to create offer:', err);
+            this.callbacks.onError(err instanceof Error ? err : new Error('Failed to create offer'));
+        }
+    }
+
+    /**
+     * Helper: Process pending ICE candidates
+     */
+    private async processPendingCandidates(): Promise<void> {
+        if (this.pendingCandidates.length === 0) return;
+
+        console.log(`[WebRTC] Processing ${this.pendingCandidates.length} pending candidates`);
+
+        for (const candidate of this.pendingCandidates) {
+            try {
+                await this.pc!.addIceCandidate(candidate);
+            } catch (err) {
+                console.error('[WebRTC] Failed to add queued candidate:', err);
+            }
+        }
+
+        this.pendingCandidates = [];
+        if (this.candidateFlushTimeout) clearTimeout(this.candidateFlushTimeout);
+    }
+
+    /**
+     * Helper: Update connection phase and notify
+     */
+    private setPhase(phase: ConnectionPhase): void {
+        if (this.connectionPhase !== phase) {
+            console.log(`[WebRTC] Phase: ${this.connectionPhase} -> ${phase}`);
+            this.connectionPhase = phase;
+            this.callbacks.onConnectionPhase?.(phase);
+        }
     }
 }

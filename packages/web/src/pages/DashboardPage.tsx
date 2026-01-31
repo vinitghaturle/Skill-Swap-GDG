@@ -54,32 +54,36 @@ export const DashboardPage = () => {
 
             {/* Premium Hero Card */}
             <motion.div variants={item}>
-                <Card className="relative overflow-hidden border-indigo-500/10 p-10">
-                    <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-indigo-600/10 blur-[100px] rounded-full" />
-                    <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-purple-600/10 blur-[100px] rounded-full" />
+                <Card className="relative overflow-hidden border-warm-500/10 p-8 sm:p-10">
+                    <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-warm-500/10 blur-[100px] rounded-full" />
+                    <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-warm-700/10 blur-[100px] rounded-full" />
 
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
                         <div>
                             <div className="flex items-center gap-2 mb-4">
-                                <Badge variant="info" className="bg-indigo-500/20">Welcome Back</Badge>
+                                <Badge variant="info" className="bg-warm-500/20 text-warm-300">👋 Welcome back</Badge>
                                 <motion.div
                                     animate={{ rotate: [0, 20, 0] }}
                                     transition={{ repeat: Infinity, duration: 2 }}
                                 >
-                                    <Sparkles className="w-4 h-4 text-amber-400" />
+                                    <Sparkles className="w-4 h-4 text-warm-400" />
                                 </motion.div>
                             </div>
-                            <h2 className="text-5xl font-black text-white mb-3 tracking-tighter">
-                                Hello, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">{currentUser?.displayName?.split(' ')[0] || 'Explorer'}</span>!
+                            <h2 className="text-4xl sm:text-5xl font-black text-white mb-3 tracking-tighter">
+                                Hey, <span className="text-transparent bg-clip-text bg-gradient-to-r from-warm-400 via-warm-500 to-warm-600">{currentUser?.displayName?.split(' ')[0] || 'there'}</span>!
                             </h2>
                             <p className="text-gray-400 text-lg max-w-xl leading-relaxed font-medium">
-                                Ready to level up today? Your next breakthrough is just one session away.
+                                What will you learn today? Or maybe you're ready to teach something new?
                             </p>
                         </div>
 
                         <div className="flex gap-3">
-                            <Button size="lg" onClick={() => navigate("/matches")} className="group">
-                                Start Swapping
+                            <Button
+                                size="lg"
+                                onClick={() => navigate("/matches")}
+                                className="group hover:scale-105 transition-transform duration-300 shadow-lg shadow-warm-500/20"
+                            >
+                                Find Someone to Learn From
                                 <Rocket className="w-4 h-4 ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                             </Button>
                         </div>
@@ -99,9 +103,9 @@ export const DashboardPage = () => {
                     <>
                         {/* Profile Status */}
                         <div>
-                            <Card variant="glass" className="h-full hover:border-indigo-500/30 transition-all duration-500 group">
+                            <Card variant="glass" className="h-full hover:border-warm-500/30 transition-all duration-500 group hover:scale-[1.02]">
                                 <div className="flex items-center justify-between mb-6">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Identity</p>
+                                    <p className="text-xs font-bold tracking-wider text-gray-500">Profile Status</p>
                                     <div className="flex items-center gap-2">
                                         <Badge variant={profile.profileCompleted ? 'success' : 'warning'}>
                                             {profile.profileCompleted ? 'Verified' : 'Incomplete'}
@@ -110,7 +114,7 @@ export const DashboardPage = () => {
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => navigate("/profile/setup")}
-                                            className="hover:bg-indigo-500/10"
+                                            className="hover:bg-warm-500/10"
                                         >
                                             <Pencil className="w-3.5 h-3.5" />
                                         </Button>
@@ -127,10 +131,10 @@ export const DashboardPage = () => {
 
                         {/* Reputation Score */}
                         <div>
-                            <Card variant="glass" className="h-full hover:border-purple-500/30 transition-all duration-500">
+                            <Card variant="glass" className="h-full hover:border-warm-600/30 transition-all duration-500 hover:scale-[1.02]">
                                 <div className="flex items-center justify-between mb-6">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Reputation</p>
-                                    <Shield className="w-4 h-4 text-purple-400" />
+                                    <p className="text-xs font-bold tracking-wider text-gray-500">Community Rating</p>
+                                    <Shield className="w-4 h-4 text-warm-400" />
                                 </div>
                                 <div className="flex items-baseline gap-2 mb-4">
                                     <span className="text-4xl font-black text-white tracking-tight">{profile.reputationScore ?? 100}</span>
@@ -138,7 +142,7 @@ export const DashboardPage = () => {
                                 </div>
                                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
+                                        className="h-full bg-gradient-to-r from-warm-500 to-warm-600"
                                         style={{ width: `${profile.reputationScore ?? 100}%` }}
                                     />
                                 </div>
@@ -188,41 +192,41 @@ export const DashboardPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {[
                         {
-                            title: 'Discovery',
-                            desc: 'Find your perfect skill match',
+                            title: 'Browse Matches',
+                            desc: 'Find people who want to learn what you teach',
                             icon: Users,
                             path: '/matches',
-                            color: 'from-indigo-500 to-blue-500'
+                            color: 'from-warm-500 to-warm-600'
                         },
                         {
-                            title: 'Schedule',
-                            desc: 'Manage your learning sessions',
+                            title: 'My Sessions',
+                            desc: 'See upcoming and past learning sessions',
                             icon: Calendar,
                             path: '/sessions',
-                            color: 'from-purple-500 to-pink-500'
+                            color: 'from-warm-400 to-warm-500'
                         },
                         {
-                            title: 'Lounge',
-                            desc: 'Connect with your community',
+                            title: 'Messages',
+                            desc: 'Chat with your learning partners',
                             icon: MessageSquare,
                             path: '/chat',
-                            color: 'from-emerald-500 to-teal-500'
+                            color: 'from-amber-500 to-warm-400'
                         }
                     ].map((action) => (
                         <motion.button
                             key={action.title}
-                            whileHover={{ y: -5 }}
+                            whileHover={{ y: -8, scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => navigate(action.path)}
                             className="text-left group outline-none"
                         >
-                            <Card variant="glass" className="p-1 px-1 group-hover:border-white/20 transition-all duration-300">
+                            <Card variant="glass" className="p-1 px-1 group-hover:border-warm-500/30 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-warm-500/10">
                                 <div className="bg-gray-900/40 backdrop-blur-3xl rounded-[22px] p-6 flex items-center gap-5">
-                                    <div className={`p-4 rounded-2xl bg-gradient-to-br ${action.color} shadow-lg shadow-indigo-500/10`}>
+                                    <div className={`p-4 rounded-2xl bg-gradient-to-br ${action.color} shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
                                         <action.icon className="w-6 h-6 text-white" strokeWidth={2.5} />
                                     </div>
                                     <div>
-                                        <h4 className="text-white font-black text-xl tracking-tighter group-hover:text-indigo-400 transition-colors">
+                                        <h4 className="text-white font-black text-xl tracking-tighter group-hover:text-warm-400 transition-colors">
                                             {action.title}
                                         </h4>
                                         <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest">

@@ -124,6 +124,14 @@ function App() {
               }
             />
             <Route
+              path="/video-call/:sessionId"
+              element={
+                <ProtectedRoute>
+                  <VideoCallPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/settings/data"
               element={
                 <ProtectedRoute>

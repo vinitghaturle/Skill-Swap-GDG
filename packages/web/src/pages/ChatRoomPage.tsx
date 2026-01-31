@@ -76,23 +76,23 @@ export const ChatRoomPage = () => {
 
     if (!currentUser || conversations === undefined) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+            <div className="min-h-screen bg-secondary-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-warm-600"></div>
             </div>
         );
     }
 
     if (!conversation || !conversation.otherUser) {
         return (
-            <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+            <div className="min-h-screen bg-secondary-50 flex flex-col items-center justify-center p-4">
                 <div className="text-6xl mb-4">🔒</div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Chat Locked</h2>
+                <h2 className="text-2xl font-bold text-secondary-900 mb-2">Chat Locked</h2>
                 <p className="text-gray-600 text-center mb-6">
                     You can only chat with this user after a session request has been accepted.
                 </p>
                 <button
                     onClick={() => navigate("/sessions")}
-                    className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium"
+                    className="px-6 py-2 bg-warm-600 text-white rounded-lg hover:bg-warm-700 font-medium"
                 >
                     Go to Sessions
                 </button>
@@ -103,26 +103,26 @@ export const ChatRoomPage = () => {
     const otherUser = conversation.otherUser;
 
     return (
-        <div className="flex flex-col h-screen bg-gray-50">
+        <div className="flex flex-col h-screen bg-secondary-50">
             {/* Header */}
             <header className="bg-white shadow-sm flex-shrink-0">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+                    <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
                             <button
                                 onClick={() => navigate("/chat")}
-                                className="text-gray-700 hover:text-gray-900"
+                                className="text-gray-700 hover:text-secondary-900 hover:-translate-x-1 transition-all flex-shrink-0"
                             >
                                 ←
                             </button>
                             <PresenceIndicator userId={otherUser._id} />
-                            <h1 className="text-xl font-bold text-gray-900">
-                                {otherUser.displayName || "Unknown User"}
+                            <h1 className="text-lg sm:text-xl font-bold text-secondary-900 truncate">
+                                {otherUser.displayName || "Anonymous"}
                             </h1>
                         </div>
                         <button
                             onClick={() => navigate(`/matches/${otherUser._id}`)}
-                            className="px-4 py-2 text-sm font-medium text-primary-600 hover:text-primary-700"
+                            className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-warm-600 hover:text-warm-700 flex-shrink-0"
                         >
                             View Profile
                         </button>
@@ -135,7 +135,7 @@ export const ChatRoomPage = () => {
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     {!messagesData || !messagesData.messages ? (
                         <div className="flex items-center justify-center py-12">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-warm-600"></div>
                         </div>
                     ) : messagesData.messages.length === 0 ? (
                         <div className="text-center py-12">
@@ -156,13 +156,13 @@ export const ChatRoomPage = () => {
                                     >
                                         <div
                                             className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${isOwnMessage
-                                                ? "bg-primary-600 text-white"
-                                                : "bg-white text-gray-900 shadow-sm"
+                                                ? "bg-warm-600 text-white"
+                                                : "bg-white text-secondary-900 shadow-sm"
                                                 }`}
                                         >
                                             <p className="text-sm break-words">{message.text}</p>
                                             <p
-                                                className={`text-xs mt-1 ${isOwnMessage ? "text-primary-100" : "text-gray-500"
+                                                className={`text-xs mt-1 ${isOwnMessage ? "text-warm-100" : "text-gray-500"
                                                     }`}
                                             >
                                                 {formatMessageTime(message.timestamp)}
@@ -186,12 +186,12 @@ export const ChatRoomPage = () => {
                             value={messageInput}
                             onChange={(e) => setMessageInput(e.target.value)}
                             placeholder="Type a message..."
-                            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                            className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-warm-500 focus:border-warm-500 text-sm sm:text-base"
                         />
                         <button
                             type="submit"
                             disabled={!messageInput.trim()}
-                            className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition"
+                            className="px-4 sm:px-6 py-2 bg-warm-600 text-white rounded-lg hover:bg-warm-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition"
                         >
                             Send
                         </button>

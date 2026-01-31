@@ -189,7 +189,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                             className="w-full"
                             variant="outline"
                         >
-                            Abort Connection Request
+                            Cancel Connection Request
                         </Button>
                     )}
 
@@ -203,7 +203,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                                 <MessageSquare className="w-4 h-4 mr-2" /> Internal Comms
                             </Button>
                             <Button
-                                onClick={() => navigate(`/call/${sessionId}`)}
+                                onClick={() => navigate(`/video-call/${sessionId}`)}
                                 disabled={!isActiveNow()}
                                 className="flex-[2]"
                                 variant={isActiveNow() ? "primary" : "secondary"}

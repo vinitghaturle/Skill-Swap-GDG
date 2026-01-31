@@ -66,7 +66,7 @@ export const FeedbackModal = ({ isOpen, onClose, sessionId, raterId, rateeName }
                             <div className="p-8">
                                 <div className="flex items-center justify-between mb-8">
                                     <div>
-                                        <h2 className="text-2xl font-black text-white tracking-tighter italic">Mission Analysis</h2>
+                                        <h2 className="text-2xl font-black text-white tracking-tighter italic">Skill Swap</h2>
                                         <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mt-1">Rate your session with {rateeName}</p>
                                     </div>
                                     <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-lg transition-colors">
@@ -83,8 +83,8 @@ export const FeedbackModal = ({ isOpen, onClose, sessionId, raterId, rateeName }
                                         <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
                                             <CheckCircle2 className="w-10 h-10 text-emerald-500" />
                                         </div>
-                                        <h3 className="text-2xl font-black text-white mb-2">Analysis Complete</h3>
-                                        <p className="text-sm text-gray-400 font-medium">Reputation data updated in the neural network.</p>
+                                        <h3 className="text-2xl font-black text-white mb-2">Session Complete</h3>
+                                        <p className="text-sm text-gray-400 font-medium">Session data updated in the database.</p>
                                     </motion.div>
                                 ) : (
                                     <div className="space-y-8">
@@ -112,16 +112,16 @@ export const FeedbackModal = ({ isOpen, onClose, sessionId, raterId, rateeName }
                                                 ))}
                                             </div>
                                             <p className="text-xs font-black uppercase tracking-widest text-gray-500 h-4">
-                                                {score === 1 && "Critical Failure"}
-                                                {score === 2 && "Underperformed"}
-                                                {score === 3 && "Nominal Results"}
-                                                {score === 4 && "Exceeded Expectations"}
-                                                {score === 5 && "Peak Efficiency"}
+                                                {score === 1 && "Poor"}
+                                                {score === 2 && "Ok"}
+                                                {score === 3 && "Satisfactory"}
+                                                {score === 4 && "Good"}
+                                                {score === 5 && "Excellent"}
                                             </p>
                                         </div>
 
                                         <div className="space-y-3">
-                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Tactical Observations (Optional)</label>
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Observations (Optional)</label>
                                             <textarea
                                                 value={comment}
                                                 onChange={(e) => setComment(e.target.value)}
@@ -142,7 +142,7 @@ export const FeedbackModal = ({ isOpen, onClose, sessionId, raterId, rateeName }
                                             </div>
                                             <div className="flex-1">
                                                 <p className="text-xs font-black text-white uppercase tracking-tight">Node Exclusion</p>
-                                                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Don't match with this entity again</p>
+                                                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Don't match with this person again</p>
                                             </div>
                                             <AlertTriangle className={cn("w-4 h-4 transition-colors", dontMatchAgain ? "text-red-500" : "text-gray-700")} />
                                         </label>

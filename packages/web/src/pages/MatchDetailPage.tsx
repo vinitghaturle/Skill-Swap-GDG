@@ -56,25 +56,25 @@ export const MatchDetailPage = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-                <div className="w-16 h-16 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
+            <div className="min-h-screen bg-secondary-950 flex items-center justify-center">
+                <div className="w-16 h-16 border-4 border-warm-500/20 border-t-warm-500 rounded-full animate-spin" />
             </div>
         );
     }
 
     if (!currentUser || !matchUser || !matchProfile || !explanation) {
         return (
-            <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
-                <Card variant="glass" className="max-w-md w-full text-center p-12">
+            <div className="min-h-screen bg-secondary-950 flex flex-col items-center justify-center p-4 sm:p-8">
+                <Card variant="glass" className="max-w-md w-full text-center p-8 sm:p-12">
                     <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-8">
                         <Info className="w-10 h-10 text-red-500" />
                     </div>
-                    <h2 className="text-3xl font-black text-white mb-4 tracking-tight">Entity Not Found</h2>
+                    <h2 className="text-2xl sm:text-3xl font-black text-white mb-4 tracking-tight">Profile Not Found</h2>
                     <p className="text-gray-500 mb-10 font-medium">
-                        The requested match node could not be retrieved from the network.
+                        This profile couldn't be found. It may have been removed or is no longer available.
                     </p>
                     <Button onClick={() => navigate("/matches")} variant="secondary">
-                        Return to Discovery
+                        Back to Matches
                     </Button>
                 </Card>
             </div>
@@ -97,23 +97,23 @@ export const MatchDetailPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-950 pb-24">
+        <div className="min-h-screen bg-secondary-950 pb-24">
             {/* Header */}
-            <header className="bg-gray-950/50 border-b border-white/5 px-6 py-10 backdrop-blur-3xl sticky top-0 z-50">
-                <div className="max-w-5xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-6">
+            <header className="bg-secondary-950/50 border-b border-warm-500/5 px-4 sm:px-6 py-6 sm:py-10 backdrop-blur-3xl sticky top-0 z-50">
+                <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 sm:gap-6 w-full sm:w-auto">
                         <button
                             onClick={() => navigate("/matches")}
-                            className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-gray-400 hover:text-white transition-all border border-white/5"
+                            className="p-2 sm:p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-gray-400 hover:text-warm-400 transition-all border border-white/5 group"
                         >
-                            <ChevronLeft className="w-6 h-6" />
+                            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 group-hover:-translate-x-1 transition-transform" />
                         </button>
-                        <div>
+                        <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                                <Brain className="w-4 h-4 text-indigo-500" />
-                                <h1 className="text-2xl font-black text-white tracking-tight">Match Optimization</h1>
+                                <Brain className="w-4 h-4 text-warm-500" />
+                                <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">Match Details</h1>
                             </div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Node analysis for {matchUser.displayName}</p>
+                            <p className="text-xs font-bold tracking-wide text-gray-500 truncate">{matchUser.displayName}'s profile</p>
                         </div>
                     </div>
 
@@ -129,8 +129,9 @@ export const MatchDetailPage = () => {
                             }
                         }}
                         variant="primary"
+                        className="w-full sm:w-auto"
                     >
-                        <Calendar className="w-4 h-4 mr-2" /> Request Session
+                        <Calendar className="w-4 h-4 mr-2" /> Schedule Session
                     </Button>
                 </div>
             </header>
@@ -146,26 +147,26 @@ export const MatchDetailPage = () => {
                     <div className="lg:col-span-2 space-y-8">
                         {/* Hero Score Card */}
                         <motion.div variants={item}>
-                            <Card variant="glass" className="relative overflow-hidden p-12 text-center border-indigo-500/20 bg-indigo-500/[0.02]">
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
-                                <div className="absolute -top-24 -left-24 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full" />
-                                <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-purple-500/10 blur-[100px] rounded-full" />
+                            <Card variant="glass" className="relative overflow-hidden p-8 sm:p-12 text-center border-warm-500/20 bg-warm-500/[0.02]">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-warm-500 to-transparent" />
+                                <div className="absolute -top-24 -left-24 w-64 h-64 bg-warm-500/10 blur-[100px] rounded-full" />
+                                <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-warm-700/10 blur-[100px] rounded-full" />
 
                                 <div className="relative z-10">
-                                    <Badge variant="info" className="mb-6">Global Match Index</Badge>
+                                    <Badge variant="info" className="mb-6 bg-warm-500/10 text-warm-400 border-warm-500/20">Match Score</Badge>
                                     <div className="flex items-baseline justify-center gap-2 mb-4">
                                         <motion.span
                                             initial={{ scale: 0.5, opacity: 0 }}
                                             animate={{ scale: 1, opacity: 1 }}
                                             transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                                            className="text-9xl font-black text-white tracking-tighter"
+                                            className="text-6xl sm:text-9xl font-black text-white tracking-tighter"
                                         >
                                             {explanation.score}
                                         </motion.span>
-                                        <span className="text-4xl font-black text-indigo-500/50">%</span>
+                                        <span className="text-3xl sm:text-4xl font-black text-warm-500/50">%</span>
                                     </div>
-                                    <p className="text-gray-400 font-medium text-lg max-w-sm mx-auto">
-                                        Exceptional synergy detected across all primary and secondary skill clusters.
+                                    <p className="text-gray-400 font-medium text-base sm:text-lg max-w-sm mx-auto px-4">
+                                        {explanation.score >= 80 ? "Excellent match! You both have complementary skills and availability." : "Good potential for a successful skill exchange."}
                                     </p>
                                 </div>
                             </Card>
@@ -173,36 +174,36 @@ export const MatchDetailPage = () => {
 
                         {/* Breakdown */}
                         <motion.div variants={item}>
-                            <Card variant="glass" className="p-8">
+                            <Card variant="glass" className="p-6 sm:p-8">
                                 <div className="flex items-center gap-3 mb-8">
-                                    <Zap className="w-5 h-5 text-indigo-500" />
-                                    <h2 className="text-xl font-black text-white uppercase tracking-tighter">Diagnostic Breakdown</h2>
+                                    <Zap className="w-5 h-5 text-warm-500" />
+                                    <h2 className="text-lg sm:text-xl font-black text-white tracking-tight">Why This Match Works</h2>
                                 </div>
                                 <div className="space-y-8">
                                     <ScoreBar
                                         icon={<Target className="w-4 h-4" />}
-                                        label="Skill Matrix Overlap"
+                                        label="Skill Compatibility"
                                         score={explanation.breakdown.skillMatch}
                                         max={40}
-                                        color="indigo"
+                                        color="emerald"
                                     />
                                     <ScoreBar
                                         icon={<Calendar className="w-4 h-4" />}
-                                        label="Temporal Alignment"
+                                        label="Schedule Match"
                                         score={explanation.breakdown.availabilityMatch}
                                         max={30}
-                                        color="purple"
+                                        color="amber"
                                     />
                                     <ScoreBar
                                         icon={<Languages className="w-4 h-4" />}
-                                        label="Linguistic Translation"
+                                        label="Language Match"
                                         score={explanation.breakdown.languageMatch}
                                         max={20}
                                         color="emerald"
                                     />
                                     <ScoreBar
                                         icon={<Shield className="w-4 h-4" />}
-                                        label="Network Reputation"
+                                        label="Community Rating"
                                         score={explanation.breakdown.trustScore}
                                         max={10}
                                         color="amber"
@@ -210,10 +211,10 @@ export const MatchDetailPage = () => {
                                     {explanation.breakdown.fairnessAdjustment !== 0 && (
                                         <ScoreBar
                                             icon={<Brain className="w-4 h-4" />}
-                                            label="Equitable Distribution"
+                                            label="Fairness Bonus"
                                             score={explanation.breakdown.fairnessAdjustment + 10}
                                             max={20}
-                                            color="indigo"
+                                            color="emerald"
                                         />
                                     )}
                                 </div>
@@ -223,9 +224,9 @@ export const MatchDetailPage = () => {
                         {/* Analysis Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <motion.div variants={item}>
-                                <Card className="p-8 h-full bg-emerald-500/[0.02] border-emerald-500/20">
-                                    <h3 className="text-lg font-black text-emerald-400 uppercase tracking-tighter mb-6 flex items-center gap-2">
-                                        <Check className="w-4 h-4" /> Optimizations
+                                <Card className="p-6 sm:p-8 h-full bg-emerald-500/[0.02] border-emerald-500/20">
+                                    <h3 className="text-base sm:text-lg font-black text-emerald-400 tracking-tight mb-6 flex items-center gap-2">
+                                        <Check className="w-4 h-4" /> Strengths
                                     </h3>
                                     <ul className="space-y-4">
                                         {explanation.strengths.map((strength: string, i: number) => (
@@ -238,9 +239,9 @@ export const MatchDetailPage = () => {
                                 </Card>
                             </motion.div>
                             <motion.div variants={item}>
-                                <Card className="p-8 h-full bg-amber-500/[0.02] border-amber-500/20">
-                                    <h3 className="text-lg font-black text-amber-400 uppercase tracking-tighter mb-6 flex items-center gap-2">
-                                        <Info className="w-4 h-4" /> Constraints
+                                <Card className="p-6 sm:p-8 h-full bg-amber-500/[0.02] border-amber-500/20">
+                                    <h3 className="text-base sm:text-lg font-black text-amber-400 tracking-tight mb-6 flex items-center gap-2">
+                                        <Info className="w-4 h-4" /> Things to Consider
                                     </h3>
                                     <ul className="space-y-4">
                                         {explanation.considerations.map((consideration: string, i: number) => (
@@ -268,19 +269,19 @@ export const MatchDetailPage = () => {
 
                                 <div className="space-y-8">
                                     <div>
-                                        <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">Biometric Intel</h4>
+                                        <h4 className="text-xs font-bold tracking-wide text-gray-500 mb-3">About</h4>
                                         <p className="text-sm text-gray-300 font-medium leading-relaxed italic">
                                             "{matchProfile.bio}"
                                         </p>
                                     </div>
 
                                     <div>
-                                        <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-4 flex items-center gap-2">
-                                            <GraduationCap className="w-3 h-3" /> Masters Of
+                                        <h4 className="text-xs font-bold tracking-wide text-gray-500 mb-4 flex items-center gap-2">
+                                            <GraduationCap className="w-3 h-3" /> Can Teach
                                         </h4>
                                         <div className="flex flex-wrap gap-2">
                                             {matchProfile.teachSkills.map((skill: string) => (
-                                                <Badge key={skill} variant="success" className="bg-emerald-500/5 hover:bg-emerald-500/10 transition-colors">
+                                                <Badge key={skill} variant="success" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20 transition-colors">
                                                     {skill}
                                                 </Badge>
                                             ))}
@@ -288,12 +289,12 @@ export const MatchDetailPage = () => {
                                     </div>
 
                                     <div>
-                                        <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-4 flex items-center gap-2">
-                                            <BookOpen className="w-3 h-3" /> Seeking Insights
+                                        <h4 className="text-xs font-bold tracking-wide text-gray-500 mb-4 flex items-center gap-2">
+                                            <BookOpen className="w-3 h-3" /> Wants to Learn
                                         </h4>
                                         <div className="flex flex-wrap gap-2">
                                             {matchProfile.learnSkills.map((skill: string) => (
-                                                <Badge key={skill} variant="info" className="bg-indigo-500/5 hover:bg-indigo-500/10 transition-colors">
+                                                <Badge key={skill} variant="info" className="bg-warm-500/10 text-warm-400 border-warm-500/20 hover:bg-warm-500/20 transition-colors">
                                                     {skill}
                                                 </Badge>
                                             ))}
@@ -311,15 +312,15 @@ export const MatchDetailPage = () => {
                                                     navigate(`/chat/${convId}`);
                                                 }
                                             }}
-                                            className="w-full"
+                                            className="w-full group"
                                             variant="secondary"
                                         >
-                                            <MessageSquare className="w-4 h-4 mr-2" /> Direct Transmission
+                                            <MessageSquare className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" /> Send Message
                                         </Button>
 
                                         <Button
                                             onClick={async () => {
-                                                if (window.confirm(`Are you sure you want to block ${matchUser.displayName}? This will permanently restrict all future communication.`)) {
+                                                if (window.confirm(`Are you sure you want to block ${matchUser.displayName}? You won't be able to see their profile or receive messages from them.`)) {
                                                     await blockUser({
                                                         blockerId: currentUser._id,
                                                         blockedId: matchUser._id,
@@ -330,14 +331,14 @@ export const MatchDetailPage = () => {
                                             className="w-full border-red-500/20 text-red-500 hover:bg-red-500/10"
                                             variant="secondary"
                                         >
-                                            <UserMinus className="w-4 h-4 mr-2" /> Block Interface
+                                            <UserMinus className="w-4 h-4 mr-2" /> Block User
                                         </Button>
 
                                         <button
                                             onClick={() => setIsReportModalOpen(true)}
-                                            className="w-full text-center py-2 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-red-400 transition-colors"
+                                            className="w-full text-center py-2 text-xs font-bold tracking-wide text-gray-500 hover:text-red-400 transition-colors"
                                         >
-                                            Submit Protocol Report
+                                            Report User
                                         </button>
                                     </div>
                                 </div>

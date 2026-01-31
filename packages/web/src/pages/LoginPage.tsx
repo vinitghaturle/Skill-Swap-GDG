@@ -50,11 +50,11 @@ export const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+        <div className="min-h-screen bg-secondary-950 flex flex-col items-center justify-center p-6 relative overflow-hidden">
             {/* Cinematic Background */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[120px] rounded-full" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[120px] rounded-full" />
+                <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-warm-500/10 blur-[120px] rounded-full" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-warm-700/10 blur-[120px] rounded-full" />
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-50 contrast-150" />
             </div>
 
@@ -67,12 +67,12 @@ export const LoginPage = () => {
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-6"
+                        className="inline-flex items-center gap-2 px-3 py-1 bg-warm-500/10 border border-warm-500/20 rounded-full text-xs font-bold tracking-wide text-warm-400 mb-6"
                     >
-                        <Zap className="w-3 h-3" /> Secure Node Access
+                        <Zap className="w-3 h-3" /> Secure & Simple
                     </motion.div>
-                    <h1 className="text-5xl font-black text-white tracking-tighter mb-2 uppercase italic">Nexus</h1>
-                    <p className="text-gray-500 font-medium tracking-tight">Access the global transmission network.</p>
+                    <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tighter mb-2">SkillSwap</h1>
+                    <p className="text-gray-500 font-medium tracking-tight">Connect with learners and share skills.</p>
                 </div>
 
                 <Card variant="glass" className="p-1 border-white/5 shadow-2xl overflow-hidden">
@@ -100,15 +100,15 @@ export const LoginPage = () => {
                                         exit={{ opacity: 0, y: -10 }}
                                         className="space-y-2"
                                     >
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Node Name</label>
+                                        <label className="text-xs font-bold tracking-wide text-gray-500 ml-2">Display Name</label>
                                         <div className="relative group">
                                             <input
                                                 type="text"
                                                 required
                                                 value={displayName}
                                                 onChange={(e) => setDisplayName(e.target.value)}
-                                                className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-6 py-4 text-white font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/50 group-hover:bg-white/[0.04] transition-all"
-                                                placeholder="Enter full name..."
+                                                className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-6 py-4 text-white font-medium focus:outline-none focus:ring-2 focus:ring-warm-500/50 group-hover:bg-white/[0.04] transition-all"
+                                                placeholder="Enter your full name..."
                                             />
                                             <UserIcon className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
                                         </div>
@@ -117,29 +117,29 @@ export const LoginPage = () => {
                             </AnimatePresence>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Email Address</label>
+                                <label className="text-xs font-bold tracking-wide text-gray-500 ml-2">Email Address</label>
                                 <div className="relative group">
                                     <input
                                         type="email"
                                         required
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-6 py-4 text-white font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/50 group-hover:bg-white/[0.04] transition-all"
-                                        placeholder="node@nexus.network"
+                                        className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-6 py-4 text-white font-medium focus:outline-none focus:ring-2 focus:ring-warm-500/50 group-hover:bg-white/[0.04] transition-all"
+                                        placeholder="you@example.com"
                                     />
                                     <Mail className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Encryption Key</label>
+                                <label className="text-xs font-bold tracking-wide text-gray-500 ml-2">Password</label>
                                 <div className="relative group">
                                     <input
                                         type="password"
                                         required
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-6 py-4 text-white font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/50 group-hover:bg-white/[0.04] transition-all font-mono"
+                                        className="w-full bg-white/[0.02] border border-white/10 rounded-2xl px-6 py-4 text-white font-medium focus:outline-none focus:ring-2 focus:ring-warm-500/50 group-hover:bg-white/[0.04] transition-all font-mono"
                                         placeholder="**********"
                                     />
                                     <Lock className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
@@ -150,22 +150,22 @@ export const LoginPage = () => {
                                 type="submit"
                                 isLoading={loading}
                                 size="lg"
-                                className="w-full shadow-2xl shadow-indigo-600/10"
+                                className="w-full shadow-2xl shadow-warm-600/10"
                             >
-                                {isSignUp ? "Initialize Access" : "Establish Link"} <ArrowRight className="w-4 h-4 ml-2" />
+                                {isSignUp ? "Create Account" : "Sign In"} <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
                         </form>
 
                         <div className="mt-10">
                             <div className="relative flex items-center justify-center mb-10">
                                 <div className="w-full h-px bg-white/5" />
-                                <span className="absolute px-4 bg-gray-950/40 text-[9px] font-black uppercase tracking-widest text-gray-600">Secondary Protocols</span>
+                                <span className="absolute px-4 bg-gray-950/40 text-xs font-bold tracking-wide text-gray-600">Or continue with</span>
                             </div>
 
                             <button
                                 onClick={handleGoogleSignIn}
                                 disabled={loading}
-                                className="w-full flex items-center justify-center gap-3 py-4 border border-white/10 rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] text-white text-sm font-black uppercase tracking-[0.2em] transition-all disabled:opacity-30"
+                                className="w-full flex items-center justify-center gap-3 py-4 border border-white/10 rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] text-white text-sm font-bold tracking-wide transition-all disabled:opacity-30"
                             >
                                 <svg viewBox="0 0 24 24" className="w-5 h-5 grayscale group-hover:grayscale-0 transition-all">
                                     <path
@@ -185,16 +185,16 @@ export const LoginPage = () => {
                                         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                                     />
                                 </svg>
-                                Authenticate with Google
+                                Sign in with Google
                             </button>
                         </div>
 
                         <div className="mt-12 text-center">
                             <button
                                 onClick={() => setIsSignUp(!isSignUp)}
-                                className="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors"
+                                className="text-xs font-bold tracking-wide text-gray-500 hover:text-white transition-colors"
                             >
-                                {isSignUp ? "Already linked? Establish Connection" : "New Node? Join the network"}
+                                {isSignUp ? "Already have an account? Sign in" : "New to SkillSwap? Create an account"}
                             </button>
                         </div>
                     </div>

@@ -112,9 +112,9 @@ export const SessionRequestModal: React.FC<SessionRequestModalProps> = ({
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">
                                             <Calendar className="w-4 h-4 text-indigo-500" />
-                                            <h2 className="text-2xl font-black text-white tracking-tight uppercase">Session Uplink</h2>
+                                            <h2 className="text-2xl font-black text-white tracking-tight uppercase">Session Request</h2>
                                         </div>
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Node interaction with {matchUserName}</p>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Interaction with {matchUserName}</p>
                                     </div>
                                     <button
                                         onClick={onClose}
@@ -129,7 +129,7 @@ export const SessionRequestModal: React.FC<SessionRequestModalProps> = ({
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 text-gray-400">
                                             <BookOpen className="w-4 h-4" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest">Skill Vector</span>
+                                            <span className="text-[10px] font-black uppercase tracking-widest">Skill Request</span>
                                         </div>
                                         <div className="relative group">
                                             <select
@@ -169,7 +169,7 @@ export const SessionRequestModal: React.FC<SessionRequestModalProps> = ({
                                         <div className="space-y-4">
                                             <div className="flex items-center gap-2 text-gray-400">
                                                 <Clock className="w-4 h-4" />
-                                                <span className="text-[10px] font-black uppercase tracking-widest">Time Sync</span>
+                                                <span className="text-[10px] font-black uppercase tracking-widest">Time</span>
                                             </div>
                                             <input
                                                 type="time"
@@ -185,7 +185,7 @@ export const SessionRequestModal: React.FC<SessionRequestModalProps> = ({
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 text-gray-400">
                                             <Zap className="w-4 h-4" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest">Temporal Span</span>
+                                            <span className="text-[10px] font-black uppercase tracking-widest">Duration</span>
                                         </div>
                                         <div className="grid grid-cols-3 gap-3">
                                             {[30, 60, 120].map((mins) => (
@@ -231,7 +231,7 @@ export const SessionRequestModal: React.FC<SessionRequestModalProps> = ({
                                             variant="secondary"
                                             className="flex-1"
                                         >
-                                            Abort
+                                            cancle
                                         </Button>
                                         <Button
                                             type="submit"
@@ -239,7 +239,7 @@ export const SessionRequestModal: React.FC<SessionRequestModalProps> = ({
                                             variant="primary"
                                             className="flex-[2]"
                                         >
-                                            Initialize Uplink <ArrowRight className="w-4 h-4 ml-2" />
+                                            Request <ArrowRight className="w-4 h-4 ml-2" />
                                         </Button>
                                     </div>
                                 </form>
